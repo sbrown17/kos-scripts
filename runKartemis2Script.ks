@@ -8,10 +8,9 @@ function main {
     launchStart().
     print "Lift Off!".
     ascentGuidance().
-    until apoapsis > 190000 {
+    // 180km should give enough leeway to make 190 during the periapsis raise
+    until apoapsis > 180000 {
         PRINT "Monitoring Ascent Staging...".
-        
-        // include counter for staging? 1st for solid booster sep, 2nd for meco
         ascentStaging().
     }
     
@@ -71,22 +70,24 @@ function perigeeRaisingBurn {
     // initial orion orbit is ~160x1900km
     // below 70km is atmo on Kerbin
 
-    // wait until time until apoapsis is 1/2 probable burn for circularization
     lock steering to PROGRADE.
     lock THROTTLE to 0.
     // burn, and stage, until periapsis is 90km 
     PRINT "Wait until apoapsis < 5s.".
-    WAIT UNTIl ETA:APOAPSIS < 5.
+    set kuniverse:timewarp:rate to 10.
+    WAIT UNTIl ETA:APOAPSIS < 2.
+    set kuniverse:timewarp:rate to 1.
+    until periapsis > 40000 {
+        PRINT "in the until periapsis > 90km".
+        lock THROTTLE to 1.
+    }
+    LOCK THROTTLE TO 0.
+    // this first one pops the fairing, maybe find a more appropriate way to do this. eg wait until alt is >70000 to pop or something
+    stageRocket("Rocket"). wait 1.
+    stageRocket("Rocket"). wait 1.
     until periapsis > 90000 {
         PRINT "in the until periapsis > 90km".
         lock THROTTLE to 1.
-        if ship:availableThrust = 0 {
-            stageRocket("Rocket"). wait 1.
-                // abortSystemMonitor().
-                if ship:availableThrust > 0 {
-                    break.
-                }
-        }
     }
     LOCK THROTTLE TO 0.
 }
