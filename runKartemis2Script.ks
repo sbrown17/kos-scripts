@@ -8,7 +8,7 @@ function main {
     launchStart().
     print "Lift Off!".
     ascentGuidance().
-    until apoapsis > 95000 {
+    until apoapsis > 190000 {
         PRINT "Monitoring Ascent Staging...".
         
         // include counter for staging? 1st for solid booster sep, 2nd for meco
@@ -68,6 +68,9 @@ function ascentStaging {
 }
 
 function perigeeRaisingBurn {
+    // initial orion orbit is ~160x1900km
+    // below 70km is atmo on Kerbin
+
     // wait until time until apoapsis is 1/2 probable burn for circularization
     lock steering to PROGRADE.
     lock THROTTLE to 0.
