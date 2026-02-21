@@ -19,9 +19,9 @@ function main {
     // modify circ burn to be perigee raising burn after main stage separation
     PRINT "First perigee raise burn commencing.".
     perigeeRaisingBurn().
-    PRINT "First perigee raise burn ended. Second burn ready.".
-    secondPerigeeRaisingBurn().
-    PRINT "Second perigee raise burn ended.".
+    PRINT "First perigee raise burn ended. Apogee raising burn ready.".
+    apogeeRaisingBurn().
+    PRINT "Apogee raise burn ended.".
     // munarTransferBurn().
 }
 
@@ -70,7 +70,7 @@ function ascentStaging {
 }
 
 function perigeeRaisingBurn {
-    // initial orion orbit is ~160x1900km
+    // initial orion orbit is ~160x1900km, actually another source says 185x2253km
     // below 70km is atmo on Kerbin
 
     lock steering to PROGRADE.
@@ -98,8 +98,19 @@ function perigeeRaisingBurn {
     LOCK THROTTLE TO 0.
 }
 
-function secondPerigeeRaisingBurn {
-
+function apogeeRaisingBurn {
+    // second orion orbit is ~185x74,000km
+    lock steering to PROGRADE.
+    lock THROTTLE to 0.
+    // burn, and stage, until apoapsis is 7400km 
+    PRINT "Wait until apoapsis < 2s.".
+    set kuniverse:timewarp:rate to 10.
+    WAIT UNTIl ETA:PERIAPSIS < 2.
+    set kuniverse:timewarp:rate to 1.
+    UNTIL APOAPSIS > 7400000 {
+        lock THROTTLE to 1.
+    }
+    LOCK THROTTLE TO 0.
 }
 
 main().
