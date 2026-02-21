@@ -84,12 +84,14 @@ function perigeeRaisingBurn {
         lock THROTTLE to 1.
     }
     LOCK THROTTLE TO 0.
-    // this first one pops the fairing, maybe find a more appropriate way to do this. eg wait until alt is >70000 to pop or something
+    // stage fairing
     stageRocket("Rocket"). wait 1.
-    // then stage launch abort system off of ship
+    // stage launch abort system
     stageRocket("Rocket"). wait 1.
-    // now onto the next rocket stage
+    // next propulsion stage
     stageRocket("Rocket"). wait 1.
+
+    PANELS ON.
     until periapsis > 90000 {
         lock THROTTLE to 1.
     }
