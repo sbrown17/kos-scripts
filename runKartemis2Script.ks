@@ -21,7 +21,7 @@ function main {
     perigeeRaisingBurn().
     PRINT "First perigee raise burn ended. Second burn ready.".
     secondPerigeeRaisingBurn().
-    PRINT "Second perigee raise burn ended."
+    PRINT "Second perigee raise burn ended.".
     // munarTransferBurn().
 }
 
