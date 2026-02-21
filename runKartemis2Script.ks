@@ -5,20 +5,23 @@
 global stagingRocket TO FALSE.
 
 function main {
+    // Write a function to wait until Mun is in proper position for launch... Also... Figure out when Mun is in a proper position to launch...
+    // waitFunction().
     launchStart().
     print "Lift Off!".
     ascentGuidance().
     // 180km should give enough leeway to make 190 during the periapsis raise
-    until apoapsis > 180000 {
+    until apoapsis > 185000 {
         PRINT "Monitoring Ascent Staging...".
         ascentStaging().
     }
     
     // modify circ burn to be perigee raising burn after main stage separation
-    PRINT "Perigee raise burn commencing.".
+    PRINT "First perigee raise burn commencing.".
     perigeeRaisingBurn().
-    PRINT "Perigee raise burn ended.".
-    // secondPerigeeraisingBurn().
+    PRINT "First perigee raise burn ended. Second burn ready.".
+    secondPerigeeRaisingBurn().
+    PRINT "Second perigee raise burn ended."
     // munarTransferBurn().
 }
 
@@ -73,20 +76,21 @@ function perigeeRaisingBurn {
     lock steering to PROGRADE.
     lock THROTTLE to 0.
     // burn, and stage, until periapsis is 90km 
-    PRINT "Wait until apoapsis < 5s.".
+    PRINT "Wait until apoapsis < 2s.".
     set kuniverse:timewarp:rate to 10.
     WAIT UNTIl ETA:APOAPSIS < 2.
     set kuniverse:timewarp:rate to 1.
     until periapsis > 40000 {
-        PRINT "in the until periapsis > 90km".
         lock THROTTLE to 1.
     }
     LOCK THROTTLE TO 0.
     // this first one pops the fairing, maybe find a more appropriate way to do this. eg wait until alt is >70000 to pop or something
     stageRocket("Rocket"). wait 1.
+    // then stage launch abort system off of ship
+    stageRocket("Rocket"). wait 1.
+    // now onto the next rocket stage
     stageRocket("Rocket"). wait 1.
     until periapsis > 90000 {
-        PRINT "in the until periapsis > 90km".
         lock THROTTLE to 1.
     }
     LOCK THROTTLE TO 0.
