@@ -1,0 +1,95 @@
+// SOME NOTES:
+// Kerbin is ~1/10 that of Earth so I will be using that to simplify altitudes, etc before Munar insertion burn
+
+
+global stagingRocket TO FALSE.
+
+function main {
+    launchStart().
+    print "Lift Off!".
+    ascentGuidance().
+    until apoapsis > 95000 {
+        PRINT "Monitoring Ascent Staging...".
+        
+        // include counter for staging? 1st for solid booster sep, 2nd for meco
+        ascentStaging().
+    }
+    
+    // modify circ burn to be perigee raising burn after main stage separation
+    PRINT "Perigee raise burn commencing.".
+    perigeeRaisingBurn().
+    PRINT "Perigee raise burn ended.".
+    // secondPerigeeraisingBurn().
+    // munarTransferBurn().
+}
+
+function launchStart {
+    sas OFF.
+    print "Guidance Internal".
+    lock throttle to 1.
+    for i in range(0,5){
+        print "Countdown: " + (5 - i).
+        wait 1.
+    }
+    print "All systems go.".
+    stageRocket("Launch").
+}
+
+function stageRocket {
+    parameter stageName.
+
+    wait until stage:ready.
+    SET stagingRocket TO TRUE.
+    PRINT "Staging " + stageName + "...".
+    stage.
+    SET stagingRocket TO FALSE.
+}
+
+function ascentGuidance {
+    PRINT "Ascent Guidance Operational...".
+    lock targetPitch to 88.963 - 1.03287 * alt:radar^0.409511.
+    lock steering to heading(90, targetPitch).
+}
+
+function ascentStaging {
+    if not(defined oldThrust) {
+        global oldThrust is ship:availablethrust.
+    }
+    if ship:availablethrust < (oldThrust - 10) {
+        until false {
+            stageRocket("Rocket"). wait 1.
+            // abortSystemMonitor().
+            if ship:availableThrust > 0 { 
+            break.
+            }
+        }
+        global oldThrust is ship:availablethrust.
+    }
+}
+
+function perigeeRaisingBurn {
+    // wait until time until apoapsis is 1/2 probable burn for circularization
+    lock steering to PROGRADE.
+    lock THROTTLE to 0.
+    // burn, and stage, until periapsis is 90km 
+    PRINT "Wait until apoapsis < 5s.".
+    WAIT UNTIl ETA:APOAPSIS < 5.
+    until periapsis > 90000 {
+        PRINT "in the until periapsis > 90km".
+        lock THROTTLE to 1.
+        if ship:availableThrust = 0 {
+            stageRocket("Rocket"). wait 1.
+                // abortSystemMonitor().
+                if ship:availableThrust > 0 {
+                    break.
+                }
+        }
+    }
+    LOCK THROTTLE TO 0.
+}
+
+function secondPerigeeRaisingBurn {
+
+}
+
+main().
