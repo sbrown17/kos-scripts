@@ -1,12 +1,11 @@
 // SOME NOTES:
 // Kerbin is ~1/10 that of Earth so I will be using that to simplify altitudes, etc before Munar insertion burn
 
-
 global stagingRocket TO FALSE.
 
 function main {
     // Write a function to wait until Mun is in proper position for launch... Also... Figure out when Mun is in a proper position to launch...
-    // waitFunction().
+    awaitMunarLaunchPosition().
     launchStart().
     print "Lift Off!".
     ascentGuidance().
@@ -22,7 +21,7 @@ function main {
     PRINT "First perigee raise burn ended. Apogee raising burn ready.".
     apogeeRaisingBurn().
     PRINT "Apogee raise burn ended.".
-    // munarTransferBurn().
+    munarTransferBurn().
 }
 
 function launchStart {
@@ -103,7 +102,7 @@ function apogeeRaisingBurn {
     lock steering to PROGRADE.
     lock THROTTLE to 0.
     // burn, and stage, until apoapsis is 7400km 
-    PRINT "Wait until apoapsis < 2s.".
+    PRINT "Wait until periapsis < 2s.".
     set kuniverse:timewarp:rate to 10.
     WAIT UNTIl ETA:PERIAPSIS < 2.
     set kuniverse:timewarp:rate to 1.
@@ -113,4 +112,48 @@ function apogeeRaisingBurn {
     LOCK THROTTLE TO 0.
 }
 
+function munarTransferBurn {
+    lock steering to PROGRADE.
+    lock THROTTLE to 0.
+    PRINT "Wait until periapsis < 2s.".
+    set kuniverse:timewarp:rate to 10.
+    WAIT UNTIl ETA:PERIAPSIS < 2.
+    set kuniverse:timewarp:rate to 1.
+    // figure out when to fire propulsion until... periapsis at the mun perhaps? or maybe the second encounter? have to test and see
+    // UNTIL 
+}
+
+function awaitMunarLaunchPosition {
+    // Mun Launch Wait Script
+    // TODO: also wait for it to be a "new Mun"
+    CLEARSCREEN.
+    PRINT "Calculating Mun Phase Angle...".
+
+    SET target_body TO MUN.
+    // try 130 degree angle, this is not direct ascent
+    SET target_angle TO 130. 
+
+    UNTIL 0 {
+        // Calculate the angle between KSC (Ship Longitude) and the Mun
+        SET current_phase TO MOD(target_body:LONGITUDE - SHIP:LONGITUDE + 360, 360).
+        
+        SET angle_diff TO MOD(current_phase - target_angle + 360, 360).
+
+        CLEARSCREEN.
+        PRINT "Target Phase Angle: " + target_angle.
+        PRINT "Current Phase:      " + ROUND(current_phase, 2).
+        PRINT "Degrees to Window:  " + ROUND(angle_diff, 2).
+
+        IF angle_diff > 5 {
+            SET KUNIVERSE:TIMEWARP:RATE TO 100.
+        } ELSE IF angle_diff > 2 {
+            SET KUNIVERSE:TIMEWARP:RATE TO 5.
+        } ELSE {
+            SET KUNIVERSE:TIMEWARP:RATE TO 0.
+            PRINT "Window Reached! Prepare for Launch.".
+            BREAK.
+        }
+        WAIT 0.1.
+    }
+}
 main().
