@@ -113,7 +113,7 @@ function apogeeRaisingBurn {
 }
 function munarTransferBurn {
     PRINT "Calculating Free Return TLI Maneuver...".
-    SET munar_transfer_node TO NODE(TimeStamp:(0,13,4,41,57), 101.682, 0, 98.606).
+    SET munar_transfer_node TO NODE(TimeStamp(0,13,4,41,57), 101.682, 0, 98.606).
     ADD munar_transfer_node.
     executeNode(munar_transfer_node).
     REMOVE munar_transfer_node.
