@@ -120,28 +120,8 @@ function munarTransferBurn {
 }
 
 function executeNode {
-//     parameter nd.
+    parameter nd.
     
-    // lock steering to nd:deltav.
-    // PRINT "Turning to burn vector...".
-    // wait until vdot(facing:vector, nd:deltav:normalized) > 0.99. // Wait until aligned
-    
-    // // Wait until it's time to burn
-    // local burnTime is nd:deltav:mag / (ship:availablethrust / ship:mass).
-    // PRINT "Waiting for burn time...".
-    // wait until nd:eta <= (burnTime / 2).
-    
-    // // Burn
-    // PRINT "Burning!".
-    // lock throttle to min(nd:deltav:mag / (ship:availablethrust / ship:mass), 1.0).
-    // wait until nd:deltav:mag < 0.1.
-    
-    // lock throttle to 0.
-    // unlock steering.
-    // remove nd.
-    // PRINT "TLI Complete. Have a good trip!".
-
-
     //we only need to lock throttle once to a certain variable in the beginning of the loop, and adjust only the variable itself inside it
     set tset to 0.
     lock throttle to tset.
